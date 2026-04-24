@@ -40,10 +40,10 @@ COMPLEX_PATTERNS = [
 
 @dataclass
 class Decision:
-    should_human_do_it: bool
+    manual_recommended: bool
     confidence: float
-    rationale: str
-    agent_instruction: str
+    explanation: str
+    recommended_action: str
 
 
 def _count_patterns(text: str, patterns: list[str]) -> int:
@@ -86,21 +86,22 @@ def _decide(prompt: str, code_context: str) -> Decision:
         instruction = "Proceed with normal agent workflow."
 
     return Decision(
-        should_human_do_it=should_human,
+        manual_recommended=should_human,
         confidence=round(confidence, 2),
-        rationale=rationale,
-        agent_instruction=instruction,
+        explanation=rationale,
+        recommended_action=instruction,
     )
 
 
 @mcp.tool(
-    name="should_a_human_do_it",
+    name="triage_code_request",
     description=(
-        "Decide if a code task is simple enough that a human should do it directly. "
-        "Returns a terse instruction for the agent."
+        "Pre-flight task triage for coding requests. Decide if a request should be "
+        "handled manually by a human or by an AI coding agent. Call before coding "
+        "when a task might be tiny (rename/comment/typo/README/small formatting edits)."
     ),
 )
-def should_a_human_do_it(prompt: str, code_context: str = "") -> dict:
+def triage_code_request(prompt: str, code_context: str = "") -> dict:
     """
     Evaluate whether a human programmer should make the code change directly.
 
@@ -110,10 +111,10 @@ def should_a_human_do_it(prompt: str, code_context: str = "") -> dict:
     """
     decision = _decide(prompt=prompt, code_context=code_context)
     return {
-        "should_human_do_it": decision.should_human_do_it,
+        "manual_recommended": decision.manual_recommended,
         "confidence": decision.confidence,
-        "rationale": decision.rationale,
-        "agent_instruction": decision.agent_instruction,
+        "explanation": decision.explanation,
+        "recommended_action": decision.recommended_action,
     }
 
 

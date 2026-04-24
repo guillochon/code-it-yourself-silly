@@ -1,6 +1,6 @@
 # code it yourself silly
 
-Lightweight Python MCP server with one tool: `should_a_human_do_it`.
+Lightweight Python MCP server with one tool: `triage_code_request`.
 
 The tool looks at a user prompt and optional code context, then decides whether a request is so trivial that a human should do it directly.
 
@@ -8,20 +8,36 @@ If yes, it returns a very short, human-readable instruction intended for the age
 
 ## Tool
 
-- `should_a_human_do_it(prompt: str, code_context: str = "")`
+- `triage_code_request(prompt: str, code_context: str = "")`
   - Returns:
-    - `should_human_do_it` (`bool`)
+    - `manual_recommended` (`bool`)
     - `confidence` (`float`)
-    - `rationale` (`str`)
-    - `agent_instruction` (`str`)
+    - `explanation` (`str`)
+    - `recommended_action` (`str`)
+
+## Getting clients to actually call it
+
+Some clients are conservative about tool use. Make this tool easier to select by:
+
+- Keeping clear action-oriented tool names.
+- Adding a client custom instruction that explicitly asks for a pre-flight triage call.
+
+Example custom instruction (Copilot/agent instructions):
+
+```text
+Before implementing any coding task, call `triage_code_request` with the user prompt
+and any available code context. If it returns manual_recommended=true and confidence>=0.7,
+present `recommended_action` first and ask the user to confirm before proceeding.
+```
 
 ## Run locally
 
+Prerequisite: install `uv` first.
+- Docs + install instructions: https://docs.astral.sh/uv/getting-started/installation/
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # Windows PowerShell: .venv\Scripts\Activate.ps1
-pip install -e .
-code-it-yourself-silly
+uv sync
+uv run code-it-yourself-silly
 ```
 
 ## Notes
@@ -45,8 +61,13 @@ Use this same `mcpServers` object format:
 {
   "mcpServers": {
     "code-it-yourself-silly": {
-      "command": "C:\\path\\to\\code-it-yourself-silly\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\path\\to\\code-it-yourself-silly",
+        "server.py"
+      ]
     }
   }
 }
@@ -61,8 +82,13 @@ Add/update in `.continue/config.json`:
   "mcpServers": [
     {
       "name": "code-it-yourself-silly",
-      "command": "C:\\path\\to\\code-it-yourself-silly\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "C:\\path\\to\\code-it-yourself-silly",
+        "server.py"
+      ]
     }
   ]
 }
@@ -74,7 +100,12 @@ Use this command path in all snippets above:
 
 ```json
 {
-  "command": "/path/to/code-it-yourself-silly/.venv/bin/python",
-  "args": ["/path/to/code-it-yourself-silly/server.py"]
+  "command": "uv",
+  "args": [
+    "run",
+    "--directory",
+    "/path/to/code-it-yourself-silly",
+    "server.py"
+  ]
 }
 ```
