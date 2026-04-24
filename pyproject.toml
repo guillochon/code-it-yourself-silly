@@ -1,0 +1,16 @@
+[project]
+name = "code-it-yourself-silly"
+version = "0.1.0"
+description = "A lightweight MCP server that tells agents when humans should just code it themselves."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "mcp>=1.9.0",
+]
+
+[project.scripts]
+code-it-yourself-silly = "server:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
