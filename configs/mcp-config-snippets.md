@@ -6,39 +6,9 @@ Assumes project path:
 - Windows: `C:\\path\\to\\code-it-yourself-silly`
 - macOS/Linux: `/path/to/code-it-yourself-silly`
 
-## Cursor
+## Cursor / Windsurf / VS Code + Cline / Claude Desktop
 
-Add to Cursor MCP settings JSON:
-
-```json
-{
-  "mcpServers": {
-    "code-it-yourself-silly": {
-      "command": "C:\\path\\to\\code-it-yourself-silly\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
-    }
-  }
-}
-```
-
-## Windsurf
-
-Add to Windsurf MCP config:
-
-```json
-{
-  "mcpServers": {
-    "code-it-yourself-silly": {
-      "command": "C:\\path\\to\\code-it-yourself-silly\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
-    }
-  }
-}
-```
-
-## VS Code + Cline
-
-Add to Cline MCP settings:
+Use this same `mcpServers` object format:
 
 ```json
 {
@@ -64,21 +34,6 @@ Add/update in `.continue/config.json`:
       "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
     }
   ]
-}
-```
-
-## Claude Desktop
-
-Add to `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "code-it-yourself-silly": {
-      "command": "C:\\path\\to\\code-it-yourself-silly\\.venv\\Scripts\\python.exe",
-      "args": ["C:\\path\\to\\code-it-yourself-silly\\server.py"]
-    }
-  }
 }
 ```
 
